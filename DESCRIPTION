@@ -1,0 +1,15 @@
+Package: FaultTree.SCRAM
+Type: Package
+Title: Interaction between FaultTree on R and SCRAM
+Version: 0.01.01
+License: GPL (>= 2)
+Date: 2017-1-3
+Author: David J. Silkworth
+Maintainer: Jacob T. Ormerod <jake@openreliability.org>
+Depends: FaultTree 
+Suggests:(Ubuntu >14.04 to run SCRAM)
+Description: Permits fault trees parepared on R to access advanced calculations on SCRAM
+URL: http://www.openreliability.org/fault-tree-analysis-on-r/
+LazyLoad: yes
+
+

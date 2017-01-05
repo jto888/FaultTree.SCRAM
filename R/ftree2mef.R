@@ -74,17 +74,20 @@ ftree2mef<-function(DF, dir="", write_file=FALSE)  {
 
 	eventXML=""
 	for(event in 1:length(eids)) {
-		tagname<-DF$Tag_Obj[which(DF$ID==eids[event])]
-		if(tagname=="")  {
-			tagname<-paste0("E_", eids[event])
-		}
+## cannot replicate MOE's in mef
+		if(DF$MOE[which(DF$ID==eids[event])]<1)  {
+			tagname<-DF$Tag_Obj[which(DF$ID==eids[event])]
+			if(tagname=="")  {
+				tagname<-paste0("E_", eids[event])
+			}
 
-		eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">')
+			eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">')
 
-		if(DF$PBF[which(DF$ID==eids[event])]>0) {
-			eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>')
+			if(DF$PBF[which(DF$ID==eids[event])]>0) {
+				eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>')
+			}
+			eventXML<-paste0(eventXML, '</define-basic-event>')
 		}
-		eventXML<-paste0(eventXML, '</define-basic-event>')
 	}
 
 	XMLhead<-'<!DOCTYPE opsa-mef>

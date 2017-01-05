@@ -61,7 +61,12 @@ ftree2mef<-function(DF, dir="", write_file=FALSE)  {
 				treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>')
 			}else{
 				if(tagname=="")  {
-					tagname<-paste0("E_", chids[child])
+## must use source ID for MOE when assigning default tagname to events							
+					if(DF$MOE[which(DF$ID==chids[child])]<1)  {			
+						tagname<-paste0("E_", chids[child])		
+					}else{			
+						tagname<-paste0("E_", DF$MOE[which(DF$ID==chids[child])])		
+					}			
 				}
 				treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>')
 			}

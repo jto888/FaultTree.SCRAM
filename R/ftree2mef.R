@@ -43,7 +43,7 @@ ftree2mef<-function(DF, dir="", write_file=FALSE)  {
 		if(gate==1) {
 			tagname="top"
 		}else{
-			tagname<-paste0("Gate@", gids[gate])
+			tagname<-paste0("G_", gids[gate])
 		}
 
 		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">')
@@ -56,12 +56,12 @@ ftree2mef<-function(DF, dir="", write_file=FALSE)  {
 			tagname<-DF$Tag_Obj[which(DF$ID==chids[child])]
 			if(DF$Type[which(DF$ID==chids[child])]>9) {
 				if(tagname=="")  {
-					tagname<-paste0("Gate@", chids[child])
+					tagname<-paste0("G_", chids[child])
 				}
 				treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>')
 			}else{
 				if(tagname=="")  {
-					tagname<-paste0("Event@", chids[child])
+					tagname<-paste0("E_", chids[child])
 				}
 				treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>')
 			}
@@ -76,7 +76,7 @@ ftree2mef<-function(DF, dir="", write_file=FALSE)  {
 	for(event in 1:length(eids)) {
 		tagname<-DF$Tag_Obj[which(DF$ID==eids[event])]
 		if(tagname=="")  {
-			tagname<-paste0("Event@", eids[event])
+			tagname<-paste0("E_", eids[event])
 		}
 
 		eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">')

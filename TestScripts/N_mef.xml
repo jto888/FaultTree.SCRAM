@@ -1,0 +1,4 @@
+<!DOCTYPE opsa-mef>
+	<opsa-mef>
+	<define-fault-tree name="N"><define-gate name="top"><or><basic-event name="N5"/><gate name="G_3"/> </or></define-gate><define-gate name="G_3"><and><gate name="G_4"/><gate name="G_5"/> </and></define-gate><define-gate name="G_4"><or><basic-event name="N3"/><basic-event name="N1"/> </or></define-gate><define-gate name="G_5"><or><basic-event name="N4"/><gate name="G_9"/> </or></define-gate><define-gate name="G_9"><and><basic-event name="N1"/><basic-event name="N2"/> </and></define-gate><define-basic-event name="N5"><float value="0.7"/></define-basic-event><define-basic-event name="N3"><float value="0.8"/></define-basic-event><define-basic-event name="N1"><float value="0.9"/></define-basic-event><define-basic-event name="N4"><float value="0.6"/></define-basic-event><define-basic-event name="N2"><float value="0.5"/></define-basic-event></define-fault-tree>
+	</opsa-mef>

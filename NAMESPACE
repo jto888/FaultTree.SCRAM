@@ -1,2 +1,7 @@
-export(ftree2mef
+export(
+callSCRAM,
+ftree2mef,
+readSCRAMcutsets,
+scram.cutsets
 )
+importFrom(FaultTree,test.ftree)

@@ -21,12 +21,13 @@
 ##
 
 ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
-  if(!test.ftree(DF)) stop("first argument must be a fault tree")
+  if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
 ## ToDo - issue warning if default tags must be issued.  
   
 ##  DF might be the DF object within the scram.cutsets environment
 ## in that event the DFname must be provided
+ hold_name<-paste(deparse(substitute(DF)))
   if(length(DFname)==0) {
 ## test and fail if hold_name=="DF" while no DFname provided 
     if(hold_name=="DF"){

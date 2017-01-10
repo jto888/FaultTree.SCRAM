@@ -12,7 +12,7 @@ ftree2mef(DF, DFname="", dir="", write_file=FALSE)
 
 \arguments{
 \item{DF}{ A fault tree dataframe object.}
-\item{DFname} {A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
+\item{DFname}{A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
 \item{dir}{A character string for an absolute directory in which R can read and write.}
 \item{write_file}{A logical controlling whether to perform the write operation.}
 }

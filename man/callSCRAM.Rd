@@ -11,8 +11,8 @@ callSCRAM(DFname, scram_arg="mocus")
 }
 
 \arguments{
-\item{DFname} {A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
-\item{scram_arg} (One of several documented arguments (following --) as listed in scram --help.
+\item{DFname}{A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
+\item{scram_arg}{One of several documented arguments (following --) as listed in scram --help.}
 }
 
 \value{
@@ -46,7 +46,7 @@ N<-addProbability (N, at=5, prob= 0.6, name="Failure Probability", name2="of N4"
 N<-addLogic(N, at=5, type="and", name="no Functionality", name2="from Externalities of N4")
 N<-addDuplicate( N, at=9, dup_id=7)
 N<-addProbability (N, at=9, prob= 0.5, name="Failure Probability", name2="of N2", tag="N2")
-# note write-file argument has default FALSE
+
 ftree2mef(N)
 \dontrun{
 callSCRAM(N)

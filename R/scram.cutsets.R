@@ -20,7 +20,7 @@
 #
 ##
 scram.cutsets<-function(DF, method="mocus")  {
-  if(!test.ftree(DF)) stop("first argument must be a fault tree")
+  if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
   DFname<-paste(deparse(substitute(DF)))
   
@@ -48,7 +48,7 @@ if(file.exists(mef_file)) {
 ##  so an input_string argument was abandoned as the second argument to callSCRAM
   do.call("callSCRAM",list(DFname,method))
 }else{
-  stop(paste0("mef file does not exist for object ",DFname)
+  stop(paste0("mef file does not exist for object ",DFname))
 }
 
   scram_file<-paste0(DFname,'_scram_', method, '.xml')

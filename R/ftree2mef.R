@@ -20,10 +20,22 @@
 #
 ##
 
-ftree2mef<-function(DF, dir="", write_file=FALSE)  {
-	if(!test.ftree(DF)) stop("first argument must be a fault tree")
-
-	DFname<-paste(deparse(substitute(DF)))
+ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
+  if(!test.ftree(DF)) stop("first argument must be a fault tree")
+  
+## ToDo - issue warning if default tags must be issued.  
+  
+##  DF might be the DF object within the scram.cutsets environment
+## in that event the DFname must be provided
+  if(length(DFname)==0) {
+## test and fail if hold_name=="DF" while no DFname provided 
+    if(hold_name=="DF"){
+      stop("must provide DFname as an argument in any do.call function as done in scram.cutsets")
+    }else{
+        DFname<-hold_name
+    }
+  }
+  
 
 ## Identify gates and events by ID
 ## establish gate types by gate ID's
@@ -79,7 +91,7 @@ ftree2mef<-function(DF, dir="", write_file=FALSE)  {
 
 	eventXML=""
 	for(event in 1:length(eids)) {
-## cannot replicate MOE's in mef
+## cannot replicate MOE tags in mef, else get redifine basic-event error from scram
 		if(DF$MOE[which(DF$ID==eids[event])]<1)  {
 			tagname<-DF$Tag_Obj[which(DF$ID==eids[event])]
 			if(tagname=="")  {

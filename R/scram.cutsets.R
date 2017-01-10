@@ -24,7 +24,7 @@ scram.cutsets<-function(DF, method="mocus")  {
   
   DFname<-paste(deparse(substitute(DF)))
   
-  if(method!="mocus" && method!="bdd") {
+  if(method!="mocus" && method!="bdd" && method!="zbdd") {
     stop(paste0("method ",method," not supported"))
   }
   

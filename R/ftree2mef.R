@@ -28,7 +28,7 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 ##  DF might be the DF object within the scram.cutsets environment
 ## in that event the DFname must be provided
  hold_name<-paste(deparse(substitute(DF)))
-  if(length(DFname)==0) {
+  if(DFname=="") {
 ## test and fail if hold_name=="DF" while no DFname provided 
     if(hold_name=="DF"){
       stop("must provide DFname as an argument in any do.call function as done in scram.cutsets")
@@ -37,7 +37,7 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
     }
   }
   
-
+lb<-"\n"
 ## Identify gates and events by ID
 ## establish gate types by gate ID's
 	gids<-DF$ID[which(DF$Type>9)]
@@ -59,9 +59,9 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 			tagname<-paste0("G_", gids[gate])
 		}
 
-		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">')
+		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
 
-		treeXML<-paste0(treeXML,'<',types[gate],'>')
+		treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
 
 		chids<-DF$ID[which(DF$CParent==gids[gate])]
 
@@ -71,7 +71,7 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 				if(tagname=="")  {
 					tagname<-paste0("G_", chids[child])
 				}
-				treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>')
+				treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>',lb)
 			}else{
 				if(tagname=="")  {
 ## must use source ID for MOE when assigning default tagname to events							
@@ -81,16 +81,18 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 						tagname<-paste0("E_", DF$MOE[which(DF$ID==chids[child])])		
 					}			
 				}
-				treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>')
+				treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>',lb)
 			}
 		}
 
-		treeXML<-paste0(treeXML, ' </',types[gate],'></define-gate>')
+		treeXML<-paste0(treeXML, ' </',types[gate],'>',lb,'</define-gate>',lb)
 
 
 	}
+	
+	treeXML<-paste0(treeXML,'</define-fault-tree>',lb)
 
-	eventXML=""
+	eventXML=paste0('<model-data>',lb)
 	for(event in 1:length(eids)) {
 ## cannot replicate MOE tags in mef, else get redifine basic-event error from scram
 		if(DF$MOE[which(DF$ID==eids[event])]<1)  {
@@ -99,23 +101,24 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 				tagname<-paste0("E_", eids[event])
 			}
 
-			eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">')
+			eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">',lb)
 
 			if(DF$PBF[which(DF$ID==eids[event])]>0) {
-				eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>')
+				eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
 			}
-			eventXML<-paste0(eventXML, '</define-basic-event>')
+			eventXML<-paste0(eventXML, '</define-basic-event>',lb)
 		}
 	}
+	
+	eventXML=paste0(eventXML,'</model-data>',lb)
 
 	XMLhead<-'<!DOCTYPE opsa-mef>
 	<opsa-mef>
 	<define-fault-tree name="'
 
-	XMLfoot<-'</define-fault-tree>
-	</opsa-mef>'
+	XMLfoot<-'</opsa-mef>'
 
-	outstring<-paste0(XMLhead,DFname,'">',treeXML, eventXML, XMLfoot)
+	outstring<-paste0(XMLhead,DFname,'">',lb,treeXML, eventXML, XMLfoot)
 
 	if(write_file==TRUE)  {
 		file_name<-paste0(dir,DFname,"_mef.xml")

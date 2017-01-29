@@ -30,9 +30,10 @@ scram.cutsets<-function(DF, method="mocus")  {
   
   #ToDo
   
+  ## test that there are no empty gates, all tree leaves must be basic component events
   ## test for component types other than probability or exposed, fail if non-coherent
-  ## test for gates priority, alarm, vote, fail for now as not impleemnted
-  ## test for inhibit and warn about conversion to and
+  ## test for gates priority, alarm, vote, fail for now as not implemnted
+  ## test for INHIBIT and warn about conversion to AND
   
   ## perhaps create a directory /temp if not already existing in current file position
   ## then assure that dir="/temp" in called functions ftree2mef and callSCRAM and readSCRAMcutsets

@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-callSCRAM<-function(DFname, scram_arg="mocus")  {
+callSCRAM<-function(DFname, scram_arg="mocus", arg2="")  {
 ##callSCRAM<-function(DFname, input_string="", scram_arg="mocus")  {
 
 scram.test<-Sys.which("scram")
@@ -35,7 +35,7 @@ if(!nchar(scram.test)>0) {
 
 
 if(file.exists(input_file)) {
-call_strg<-paste0('scram ',input_file,' --',scram_arg,' -o ',DFname,'_scram_',scram_arg, '.xml')
+call_strg<-paste0('scram ',input_file,' --',scram_arg, arg2, ' -o ',DFname,'_scram_',scram_arg, '.xml')
 system(call_strg)
 }else{
   stop(paste0("mef file ",input_file," does not exist"))

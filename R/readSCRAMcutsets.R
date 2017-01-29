@@ -2,7 +2,7 @@
 # Copyright 2017 OpenReliability.org
 #
 # A line-by-line parser of the output files from minimal cutset analysis
-# both mocus and bdd from SCRAM http://scram-pra.org/ 
+# methods mocus, bdd or zbdd from SCRAM http://scram-pra.org/ 
 # returning a list of cutsets with basic-elements identified by tag.
 # 
 #
@@ -24,6 +24,8 @@
 readSCRAMcutsets<-function(x, dir="")  {
 
 	fileName<-paste0(dir,x)
+## check that fileName provided is indeed for cutsets and indeed exists	
+	
 	conn <- file(fileName,open="r")
 	on.exit(close(conn))
 

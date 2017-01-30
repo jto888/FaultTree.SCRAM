@@ -28,11 +28,23 @@ scram.cutsets<-function(DF, method="mocus")  {
     stop(paste0("method ",method," not supported"))
   }
   
-  #ToDo
-  
   ## test that there are no empty gates, all tree leaves must be basic component events
-  ## test for component types other than probability or exposed, fail if non-coherent
+  ## Identify gates and events by ID
+	gids<-DF$ID[which(DF$Type>9)]
+	pids<-DF$CParent
+	if(length(setdiff(gids, pids))>0) {
+	stop(paste0("no children at gate(s) ID= ", setdiff(gids, pids)))
+	}
   ## test for gates priority, alarm, vote, fail for now as not implemnted
+   if(any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15)) {
+  stop("ALARM, PRIORITY, and VOTE gates are not supported in SCRAM calls")
+  }
+  ## test for component types other than probability or exposed, fail if non-coherent  
+  if(any(DF$Type==1) || any(DF$Type==2)|| any(DF$Type==3)) {
+  stop("Repairable model types: Active, Latent, and Demand not supported in SCRAM calls")
+  } 
+
+  #ToDo??
   ## test for INHIBIT and warn about conversion to AND
   
   ## perhaps create a directory /temp if not already existing in current file position
@@ -56,7 +68,7 @@ if(file.exists(mef_file)) {
   if(file.exists(scram_file)) {
     cs_list<-readSCRAMcutsets(scram_file)
   }else{
-    stop(paste0(scram_file, " does not exist\n callSCRAM(",DFname,"scram_arg=",method))
+    stop(paste0(scram_file, " does not exist"))
   }
   
 ## ToDo

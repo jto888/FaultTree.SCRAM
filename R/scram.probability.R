@@ -24,12 +24,33 @@ scram.probability<-function(DF)  {
   
   DFname<-paste(deparse(substitute(DF)))
   
-    #ToDo
-  
+
+  ## test for gates priority, alarm, vote, fail for now as not implemnted  
   ## test for component types other than probability,exposed, or sthochastic.fail if non-coherent
-  ## test for PBF value in all basic component events (except Dynamic) - fail if not all >0
-  ## it is possible that Dynamic components will have probability generated within SCRAM
+  ## test that there are no empty gates, all tree leaves must be basic component events
+  ## Identify gates and events by ID
+	gids<-DF$ID[which(DF$Type>9)]
+	pids<-DF$CParent
+	if(length(setdiff(gids, pids))>0) {
+	stop(paste0("no children at gate(s) ID= ", setdiff(gids, pids)))
+	}
   ## test for gates priority, alarm, vote, fail for now as not implemnted
+   if(any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15)) {
+  stop("ALARM, PRIORITY, and VOTE gates are not supported in SCRAM calls")
+  }
+  ## test for component types other than probability or exposed, fail if non-coherent  
+  if(any(DF$Type==1) || any(DF$Type==2)|| any(DF$Type==3)) {
+  stop("Repairable model types: Active, Latent, and Demand not supported in SCRAM calls")
+  } 
+  ## test for PBF value in all basic component events (except Dynamic) - fail if not all >0
+  ## ASSUME THAT DYNAMIC EVENTS WILL BE TYPE= 9
+  event_probs<-DF$PBF[which(DF$Type<9)]
+  if(any(event_probs<=0)) {
+	stop("incomplete basic-event probability data in model")
+   }
+  
+  ## it is possible that Dynamic components will have probability generated within SCRAM
+    #ToDo??
   ## test for inhibit and warn about conversion to and
 
   do.call("ftree2mef",list(DF,DFname,"",TRUE))
@@ -41,4 +62,11 @@ if(file.exists(mef_file)) {
   stop(paste0("mef file does not exist for object ",DFname))
 }
 
+  scram_file<-paste0(DFname,'_scram_probability.xml')
+  if(file.exists(scram_file)) {
+    probability<-readSCRAMprobability(scram_file)
+  }else{
+    stop(paste0(scram_file, " does not exist"))
+  }
+probability
 }

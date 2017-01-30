@@ -23,7 +23,24 @@
 ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
-## ToDo - issue warning if default tags must be issued.  
+## test that there are no empty gates, all tree leaves must be basic component events
+## Identify gates and events by ID
+	gids<-DF$ID[which(DF$Type>9)]
+	pids<-DF$CParent
+	if(length(setdiff(gids, pids))>0) {
+	stop(paste0("no children at gate(s) ID= ", setdiff(gids, pids)))
+	} 
+  
+  if(any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15)) {
+  stop("ALARM, PRIORITY, and VOTE gates are not supported in SCRAM calls")
+  }
+  if(any(DF$Type==1) || any(DF$Type==2)|| any(DF$Type==3)) {
+  stop("Repairable model types: Active, Latent, and Demand not supported in SCRAM calls")
+  }
+##  issue warning if default tags must be issued.
+	if(any(DF$Tag_Obj[which(DF$Type<10)]=="")) {
+	warning("Not all basic-events have tags, defaults applied")
+	}
   
 ##  DF might be the DF object within the scram.cutsets environment
 ## in that event the DFname must be provided

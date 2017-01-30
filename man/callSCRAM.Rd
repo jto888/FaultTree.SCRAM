@@ -7,12 +7,13 @@
 }
 
 \usage{
-callSCRAM(DFname, scram_arg="mocus")
+callSCRAM(DFname, scram_arg="mocus", arg2="")
 }
 
 \arguments{
 \item{DFname}{A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
 \item{scram_arg}{One of several documented arguments (following --) as listed in scram --help.}
+\item{arg2}{A second argument, usually a positive boolean (yes, 1, true) as required by certain SCRAM calls.}
 }
 
 \value{

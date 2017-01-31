@@ -3,7 +3,9 @@ callSCRAM,
 ftree2mef,
 readSCRAMcutsets,
 readSCRAMprobability,
+readSCRAMimportance,
 scram.cutsets,
-scram.probability
+scram.probability,
+scram.importance
 )
 importFrom(FaultTree,test.ftree)

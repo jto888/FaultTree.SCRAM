@@ -120,9 +120,70 @@ lb<-"\n"
 
 			eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">',lb)
 
-			if(DF$PBF[which(DF$ID==eids[event])]>0) {
-				eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
-			}
+			if(DF$UType[which(DF$ID==eids[event])]>0) {
+				if(DF$UType[which(DF$ID==eids[event])]==1) {
+					eventXML<-paste0(eventXML, '<uniform-deviate>',lb)
+## uniform-deviate ignores any mean probability entry
+					if(DF$UP1[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP1[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP1[",which(DF$ID==eids[event]),"]"))
+					}
+					if(DF$UP2[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP2[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP2[",which(DF$ID==eids[event]),"]"))
+					}			
+					eventXML<-paste0(eventXML, '</uniform-deviate>',lb)				
+				}
+				
+				if(DF$UType[which(DF$ID==eids[event])]==2) {
+					eventXML<-paste0(eventXML, '<normal-deviate>',lb)
+					if(DF$PBF[which(DF$ID==eids[event])]>0) {
+						eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("must have probability at DF$PBF[",which(DF$ID==eids[event]),"]"))
+					}			
+					if(DF$UP1[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP1[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP1[",which(DF$ID==eids[event]),"]"))
+					}			
+					eventXML<-paste0(eventXML, '</normal-deviate>',lb)					
+				}
+				
+				if(DF$UType[which(DF$ID==eids[event])]==3) {
+				eventXML<-paste0(eventXML, '<lognormal-deviate>',lb)
+				if(DF$PBF[which(DF$ID==eids[event])]>0) {
+					eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("must have probability at DF$PBF[",which(DF$ID==eids[event]),"]"))
+					}			
+					if(DF$UP1[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP1[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP1[",which(DF$ID==eids[event]),"]"))
+					}					
+					if(DF$UP2[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP2[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP2[",which(DF$ID==eids[event]),"]"))
+					}						
+				eventXML<-paste0(eventXML, '</lognormal-deviate>',lb)					
+				}	
+
+				
+				if(DF$UType[which(DF$ID==eids[event])]>3) {
+					stop(paste0("uncertainty deviate type ",DF$UType[which(DF$ID==eids[event])]," has not been defined" ))
+				}						
+			}else{
+				if(DF$PBF[which(DF$ID==eids[event])]>0) {
+					eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("must have probability at DF$PBF[",which(DF$ID==eids[event]),"]"))
+					}
+
+			}					
 			eventXML<-paste0(eventXML, '</define-basic-event>',lb)
 		}
 	}

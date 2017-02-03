@@ -23,10 +23,14 @@ Returns a dataframe containing the importance value for each basic-event obtaine
 \details{
 "And one ring to bind them all ..." This function calls ftree2mef, callSCRAM, and readSCRAMimportance
  appropriately for the entered ftree object. Temporary files for SCRAM input and output are produced in the process.
+ Measures returned are: Fussel-Vesely Diagnosis Importance Factor (DIF), Birnbaum Marginal Importance Factor (MIF),
+ Critical Importance Factor (CIF), Risk Reduction Worth (RRW), and Risk Achievement Worth (RAW).
 }
 
 \references{
   Rauzy, Antoine, et. al.  (2013) Open PSA Model Exchange Format v2.0 open-psa.org
+  
+  Dutuit,Y. and Rauzy, A. (2001) “Efficient algorithms to assess component and gate importance in fault tree analysis,” IEEE Trans. Reliab. Eng. Syst. Saf., vol. 72, no. 2
   
   Limnios, Nikolaos (2007) Fault Trees ISTE Ltd.
 

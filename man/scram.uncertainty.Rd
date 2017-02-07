@@ -1,36 +1,38 @@
-\name{scram.importance}
-\alias{scram.importance}
+\name{scram.uncertainty}
+\alias{scram.uncertainty}
 
-\title{ Fault Tree Importance Factor Determination Acquired from SCRAM }
+\title{ Fault Tree Uncertainty Analysis Acquired from SCRAM }
 
-\description{Interconnection with SCRAM by transferred XML files permits advanced calculation of importance factors for cut sets.
+\description{Interconnection with SCRAM by transferred XML files permits stochastic calculation of uncertainty factors for cut sets.
 }
 
 \usage{
-scram.importance(DF)
+scram.uncertainty(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE))
 }
 
 \arguments{
 \item{DF}{ A fault tree dataframe such as returned from ftree.make or related add... functions. 
 Fault tree elements must be either probability or exposed types, gates other than OR will be converted to AND. 
 Fault tree shall not contain PRIORITY, ALARM nor VOTE gates.}
+\item{ntrials}{The quantity of stochastic trials to be run for analysis.}
+\item{nbin}{The number of histogram bins to accumulate output results. This specification will also set the number of quantiles calculated.}
+\item{show}{A logigal vector determining whether to display [1] a histogram or [2] a plot of upper and lower bounds by quantile obtained from uncertainty analysis.}
+
 }
 
 \value{
-Returns a dataframe containing the importance value for each basic-event obtained by 5 different measures.
+Returns a list containing $probability, $quantiles, and $histogram data from uncertainty analysis.
 }
 
 \details{
-"And one ring to bind them all ..." This function calls ftree2mef, callSCRAM, and readSCRAMimportance
+"And one ring to bind them all ..." This function calls ftree2mef, callSCRAM, and readSCRAMuncertainty
  appropriately for the entered ftree object. Temporary files for SCRAM input and output are produced in the process.
- Measures returned are: Fussel-Vesely Diagnosis Importance Factor (DIF), Birnbaum Marginal Importance Factor (MIF),
- Critical Importance Factor (CIF), Risk Reduction Worth (RRW), and Risk Achievement Worth (RAW).
+ Graphical output is generated from readSCRAMuncertainty. For larger models with extensive trials additional graphics
+ calls should be more efficiently made on readSCRAMuncertainty directly.
 }
 
 \references{
   Rauzy, Antoine, et. al.  (2013) Open PSA Model Exchange Format v2.0 open-psa.org
-  
-  Dutuit,Y. and Rauzy, A. (2001) "Efficient algorithms to assess component and gate importance in fault tree analysis" IEEE Trans. Reliab. Eng. Sysl Saf, vol.72, no, 2001
   
   Limnios, Nikolaos (2007) Fault Trees ISTE Ltd.
 

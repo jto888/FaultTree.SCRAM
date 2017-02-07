@@ -24,6 +24,12 @@ Returns the input fault tree dataframe amended with entries defining an uncertai
 \details{
   Application of the deviate has no impact on the tree visualization or functionality, except to provide input for uncertainty analysis by the SCRAM program.
   SCRAM is an external program that must be installed on the system. Package FaultTree.SCRAM has been developed to facilitate interoperatility between the FaultTree package and SCRAM.
+  SCRAM implements the Open-PSA Model Exchange Format, which defines the deviate parameters. Three uncertainty deviates types have been implemented as per the MEF documentation.
+  The deviate type argument entries can be "uniform", "normal", or "lognormal". The parameters are passed in the param argument as a vector in the order as discussed in the MEF documentation
+  except that the mean (probability in all cases) has already been entered in the basic element entry such as the addProbability,  prob argument. So, only the remaining parameters are
+  entered in the param argument to applyUncertainty. For uniform-deviate the param=c([lower_bound_value], [upper_bound_value]). For the normal-deviate only the std deviation value is provided
+  as a single param. For the lognormal-deviate parameters are entered for the Err and confidence limit as documented for the MEF. Since the lower and upper bounds to the uniform-deviate must
+  exactly straddle the mean, it is wise to enter them as c(mean-half_range, mean+half_range).  
 }
 
 \references{

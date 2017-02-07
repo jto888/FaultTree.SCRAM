@@ -7,13 +7,15 @@
 }
 
 \usage{
-callSCRAM(DFname, scram_arg="mocus", arg2="")
+callSCRAM(DFname, scram_arg="mocus", arg2="", arg3="")
 }
 
 \arguments{
 \item{DFname}{A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
 \item{scram_arg}{One of several documented arguments (following --) as listed in scram --help.}
 \item{arg2}{A second argument, usually a positive boolean (yes, 1, true) as required by certain SCRAM calls.}
+\item{arg3}{A third argument, typically used for added control over certain SCRAM analyses.}
+
 }
 
 \value{
@@ -21,7 +23,7 @@ No value is returned.
 }
 
 \details{
-It is expected that the analysis argument provided is applicable to the fault tree model delivered via mef. No checking has been provided.
+It is expected that all analysis arguments provided are applicable to the fault tree model delivered via mef. No checking has been provided.
 }
 
 \references{

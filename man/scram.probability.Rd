@@ -14,6 +14,7 @@ scram.probability(DF)
 \item{DF}{ A fault tree dataframe such as returned from ftree.make or related add... functions. 
 Fault tree elements must be either probability or exposed types, gates other than OR will be converted to AND. 
 Fault tree shall not contain PRIORITY, ALARM nor VOTE gates.}
+\item{list_out}{A logical indicating whether the list output from readSCRAMprobability should be returned. Alternatively for FALSE only the exact probaility value for the top event via BDD analysis for cut sets.}
 }
 
 \value{

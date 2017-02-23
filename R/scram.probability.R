@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-scram.probability<-function(DF)  {
+scram.probability<-function(DF, list_out=FALSE)  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
   DFname<-paste(deparse(substitute(DF)))
@@ -64,9 +64,15 @@ if(file.exists(mef_file)) {
 
   scram_file<-paste0(DFname,'_scram_probability.xml')
   if(file.exists(scram_file)) {
-    probability<-readSCRAMprobability(scram_file)
+    prob_list<-readSCRAMprobability(scram_file)
   }else{
     stop(paste0(scram_file, " does not exist"))
   }
-probability
+  
+ if(list_out==TRUE) {
+	return(prob_list)
+ }else{
+	return(prob_list[[1]])
+ }
+
 }

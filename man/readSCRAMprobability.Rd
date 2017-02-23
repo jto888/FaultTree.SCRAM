@@ -16,7 +16,8 @@ readSCRAMprobability(x, dir="")
 }
 
 \value{
-Returns a scalar vector (single value) which is the exact probability calculation via BDD analysis.
+Returns a list object consisting of [[1]] a scalar vector (single value) which is the exact probability calculation via BDD analysis and [[2]] 
+a dataframe of minimal cutsets (padded with NA as appropriate) with the probability product of each set.
 }
 
 \details{

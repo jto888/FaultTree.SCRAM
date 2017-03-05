@@ -7,17 +7,20 @@
 }
 
 \usage{
-scram.uncertainty(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE))
+scram.uncertainty(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE),
+					system_mission_time=NULL)
 }
 
 \arguments{
 \item{DF}{ A fault tree dataframe such as returned from ftree.make or related add... functions. 
-Fault tree elements must be either probability or exposed types, gates other than OR will be converted to AND. 
-Fault tree shall not contain PRIORITY, ALARM nor VOTE gates.}
+Fault tree basic elements must be either probability or exposed types, INHIBIT gates will be converted to AND. 
+Fault tree shall not contain PRIORITY, ALARM nor VOTE gates, voting is [to be] handled by the atleast gate type.}
 \item{ntrials}{The quantity of stochastic trials to be run for analysis.}
 \item{nbin}{The number of histogram bins to accumulate output results. This specification will also set the number of quantiles calculated.}
 \item{show}{A logigal vector determining whether to display [1] a histogram or [2] a plot of upper and lower bounds by quantile obtained from uncertainty analysis.}
-
+\item{system_mission_time}{An entry that may alter SCRAM default for mission time to be applied to exposed elements.
+ This may be a value or label of a global scalar variable. If a global object named 'mission_time' exists it will 
+ be taken as default for this system_mission_time argument.}
 }
 
 \value{

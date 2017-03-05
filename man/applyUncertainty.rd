@@ -6,14 +6,14 @@
 \description{Modifies an existing fault tree with the addition of the repeated nodes.}
 
 \usage{
-applyUncertainty(DF, on, what="prob", type, param)
+applyUncertainty(DF, on, what="prob", deviate, param)
 }
 
 \arguments{
 \item{DF}{ A fault tree dataframe such as returned from ftree.make or related add... functions.}
 \item{on}{ The ID of the basic element node to be defined uncertain.}
 \item{what}{A string identifying the basic-event parameter that uncertainty is to be applied to. Only default of "prob" has been implemented.}
-\item{type}{A string signifying the deviate to be applied. Implemented deviate types "uniform","normal","lognormal" have been implemented.}
+\item{deviate}{A string signifying the deviate to be applied. Implemented deviate types "uniform","normal","lognormal" have been implemented.}
 \item{param}{A vector of the appropriate deviate parameters in the order sepcified in the Open-PSA Model Exchange Format}
 }
 
@@ -62,8 +62,8 @@ mytree <- addProbability(mytree, at=2, prob=.01, name="switch B failure")
 mytree <- addLogic(mytree, at=1, type= "and", name="A and C failed")
 mytree <- addDuplicate(mytree, at=5, dup_id=3)
 mytree <- addProbability(mytree, at=5, prob=.01, name="switch C failure")
-mytree <- applyUncertainty(mytree, on=7, type="normal", param=c(.001))
-mytree <- applyUncertainty(mytree, on=3, type="lognormal", param=c(10,.95))
+mytree <- applyUncertainty(mytree, on=7, deviate="normal", param=c(.001))
+mytree <- applyUncertainty(mytree, on=3, deviate="lognormal", param=c(10,.95))
 }
 
 \keyword{ reliability, risk, failure }

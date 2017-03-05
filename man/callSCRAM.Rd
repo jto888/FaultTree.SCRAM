@@ -19,10 +19,12 @@ callSCRAM(DFname, scram_arg="mocus", arg2="", arg3="")
 }
 
 \value{
-No value is returned.
+No value is returned. Given the appropriate arguments SCRAM will write output to disk.
 }
 
 \details{
+SCRAM is a free and open source probabilistic risk analysis tool that supports the Open-PSA Model Exchange Format.
+For SCRAM installation reference:  https://scram-pra.org/doc/installation.html  Assure that the SCRAM executable is on the environment PATH.
 It is expected that all analysis arguments provided are applicable to the fault tree model delivered via mef. No checking has been provided.
 }
 

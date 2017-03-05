@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE))  {
+scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE), system_mission_time=NULL)  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
 ## Test that uncertainty exists
@@ -28,6 +28,30 @@ scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE))  {
   }
   
   DFname<-paste(deparse(substitute(DF)))
+  
+	mtime<-""
+	if (is.null(system_mission_time)) {
+		if(exists("mission_time")) {
+			system_mission_time<-"mission_time"	
+			Tao <- eval((parse(text = system_mission_time)))
+			mtime<-paste0(" --mission-time ", Tao)			
+		}else{
+			stop("mission_time not avaliable, SCRAM default will apply")
+		}
+	}else{	
+		if (is.character(system_mission_time)) {
+			if (exists("system_mission_time")) {
+				Tao <- eval((parse(text = system_mission_time)))
+				mtime<-paste0(" --mission-time ", Tao)
+			}else {
+				stop("exposure object does not exist")
+			}
+		}else {
+			Tao = system_mission_time
+			mtime<-paste0(" --mission-time ", Tao)
+		}
+	}
+ 
   
   ## test for gates priority, alarm, vote, fail for now as not implemnted  
   ## test for component types other than probability,exposed, or sthochastic.fail if non-coherent
@@ -55,10 +79,10 @@ scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE))  {
     
   ## it is possible that Dynamic components will have probability generated within SCRAM
     #ToDo??
-  ## test for inhibit and warn about conversion to and
+  ## test for INHIBIT and warn about conversion to AND
   trials<-paste0(" --num-trials ",ntrials)
   bins<-paste0("  --num-bins ", nbin," --num-quantiles ", nbin)
-  arg3<-paste0(trials,bins)
+  arg3<-paste0(trials,bins,mtime)
 
   do.call("ftree2mef",list(DF,DFname,"",TRUE))
     

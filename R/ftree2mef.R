@@ -119,9 +119,29 @@ lb<-"\n"
 			}
 
 			eventXML<-paste0(eventXML, '<define-basic-event name="', tagname, '">',lb)
-
-			if(DF$UType[which(DF$ID==eids[event])]>0) {
-				if(DF$UType[which(DF$ID==eids[event])]==1) {
+			
+## This is the location to determine which distribution and deviate should be applied
+## Any exposed event from FaultTree, could be handled as a fixed probability with deviate applied.
+etype<-DF$EType[which(DF$ID==eids[event])]
+utype<-DF$UType[which(DF$ID==eids[event])]
+dev_param<-floor(utype/10)	
+deviate<-utype-10*dev_param	
+			
+## using thie flag saves nesting else clauses			
+event_entry_done=FALSE
+		
+## This is the code for basic-event having fixed probability entry with deviate, if applicable
+## Original assumption was that DF$EType[which(DF$ID==eids[event])==0
+# if(DF$EType[which(DF$ID==eids[event])==0)  {
+## this test will handle fixed probability cases or any exposed element that is defined to deviate on='prob'
+## alternatively, if(etype==0 || (utype>0&&utype<10) would have worked for deviate on='prob'
+if(etype==0 || (deviate>0&&dev_param==0))  {
+## required to stop further handling of exposed element with deviate on 'prob'
+event_entry_done=TRUE
+			# if(DF$UType[which(DF$ID==eids[event])]>0) {
+			if(deviate>0) {
+				# if(DF$UType[which(DF$ID==eids[event])]==1) {
+				if(deviate==1) {
 					eventXML<-paste0(eventXML, '<uniform-deviate>',lb)
 ## uniform-deviate ignores any mean probability entry
 					if(DF$UP1[which(DF$ID==eids[event])]>0) {
@@ -137,7 +157,8 @@ lb<-"\n"
 					eventXML<-paste0(eventXML, '</uniform-deviate>',lb)				
 				}
 				
-				if(DF$UType[which(DF$ID==eids[event])]==2) {
+				# if(DF$UType[which(DF$ID==eids[event])]==2) {
+				if(deviate==2) {
 					eventXML<-paste0(eventXML, '<normal-deviate>',lb)
 					if(DF$PBF[which(DF$ID==eids[event])]>0) {
 						eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
@@ -152,7 +173,8 @@ lb<-"\n"
 					eventXML<-paste0(eventXML, '</normal-deviate>',lb)					
 				}
 				
-				if(DF$UType[which(DF$ID==eids[event])]==3) {
+				# if(DF$UType[which(DF$ID==eids[event])]==3) {
+				if(deviate==3) {
 				eventXML<-paste0(eventXML, '<lognormal-deviate>',lb)
 				if(DF$PBF[which(DF$ID==eids[event])]>0) {
 					eventXML=paste0(eventXML, '<float value="', DF$PBF[which(DF$ID==eids[event])], '"/>',lb)
@@ -173,7 +195,8 @@ lb<-"\n"
 				}	
 
 				
-				if(DF$UType[which(DF$ID==eids[event])]>3) {
+				# if(DF$UType[which(DF$ID==eids[event])]>3) {
+				if(deviate>3) {
 					stop(paste0("uncertainty deviate type ",DF$UType[which(DF$ID==eids[event])]," has not been defined" ))
 				}						
 			}else{
@@ -185,6 +208,94 @@ lb<-"\n"
 
 			}					
 			eventXML<-paste0(eventXML, '</define-basic-event>',lb)
+}
+## end of fixed probability basic-event and any applicable deviate entry
+
+## This is the code for exponential basic-event entry with lambda deviate, if applicable
+# if(DF$EType[which(DF$ID==eids[event])]==1)  {
+if(event_entry_done==FALSE && etype==1)  {
+## not sure this is required, but should't hurt
+event_entry_done=TRUE
+eventXML<-paste0(eventXML, '<exponential>',lb)
+			# if(DF$UType[which(DF$ID==eids[event])]>0) {
+			if(utype>0) {
+## original tests here would have failed, because exponential utypes on lambda should be  11, 12, or 13
+## the deviate determination above handles this now
+				# if(DF$UType[which(DF$ID==eids[event])]==1) {
+				if(deviate==1) {
+					eventXML<-paste0(eventXML, '<uniform-deviate>',lb)
+## uniform-deviate requires lower and upper values for CFR to be in UP1 and UP2
+					if(DF$UP1[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP1[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP1[",which(DF$ID==eids[event]),"]"))
+					}
+					if(DF$UP2[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP2[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP2[",which(DF$ID==eids[event]),"]"))
+					}			
+					eventXML<-paste0(eventXML, '</uniform-deviate>',lb)				
+				}
+				
+				# if(DF$UType[which(DF$ID==eids[event])]==2) {
+				if(deviate==2) {
+					eventXML<-paste0(eventXML, '<normal-deviate>',lb)
+					if(DF$CFR[which(DF$ID==eids[event])]>0) {
+						eventXML=paste0(eventXML, '<float value="', DF$CFR[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("must have fail rate at DF$CFR[",which(DF$ID==eids[event]),"]"))
+					}			
+					if(DF$UP1[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP1[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP1[",which(DF$ID==eids[event]),"]"))
+					}			
+					eventXML<-paste0(eventXML, '</normal-deviate>',lb)					
+				}
+				
+				# if(DF$UType[which(DF$ID==eids[event])]==3) {
+				if(deviate==3) {
+				eventXML<-paste0(eventXML, '<lognormal-deviate>',lb)
+				if(DF$CFR[which(DF$ID==eids[event])]>0) {
+					eventXML=paste0(eventXML, '<float value="', DF$CFR[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("must have fail rate at DF$CFR[",which(DF$ID==eids[event]),"]"))
+					}			
+					if(DF$UP1[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP1[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP1[",which(DF$ID==eids[event]),"]"))
+					}					
+					if(DF$UP2[which(DF$ID==eids[event])]>0) {
+						eventXML<-paste0(eventXML, '<float value="',DF$UP2[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("uncertainty parameter expected at DF$UP2[",which(DF$ID==eids[event]),"]"))
+					}						
+				eventXML<-paste0(eventXML, '</lognormal-deviate>',lb)					
+				}	
+
+				
+				# if(DF$UType[which(DF$ID==eids[event])]>3) {
+				if(deviate>3) {
+				#	stop(paste0("uncertainty deviate type ",DF$UType[which(DF$ID==eids[event])]," has not been defined" ))
+					stop(paste0("uncertainty deviate type ",deviate," has not been defined" ))					
+				}						
+			}else{
+				if(DF$CFR[which(DF$ID==eids[event])]>0) {
+					eventXML=paste0(eventXML, '<float value="', DF$CFR[which(DF$ID==eids[event])], '"/>',lb)
+					}else{
+						stop(paste0("must have fail rate at DF$CFR[",which(DF$ID==eids[event]),"]"))
+					}
+
+			}
+			
+eventXML<-paste0(eventXML, '<system-mission-time/>',lb)
+eventXML<-paste0(eventXML, '</exponential>',lb)
+eventXML<-paste0(eventXML, '</define-basic-event>',lb)
+}
+## end of exponential basic-event and applicable deviate on 'lambda'
+
 		}
 	}
 	

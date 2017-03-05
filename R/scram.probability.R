@@ -19,10 +19,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-scram.probability<-function(DF, list_out=FALSE)  {
+scram.probability<-function(DF, list_out=FALSE, system_mission_time=NULL)  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
   DFname<-paste(deparse(substitute(DF)))
+ 
+	arg3<-""
+	if (is.null(system_mission_time)) {
+		if(exists("mission_time")) {
+			system_mission_time<-"mission_time"	
+			Tao <- eval((parse(text = system_mission_time)))
+			arg3<-paste0(" --mission-time ", Tao)			
+		}else{
+			warning("mission_time not avaliable, SCRAM default will apply")
+		}
+	}else{	
+		if (is.character(system_mission_time)) {
+			if (exists("system_mission_time")) {
+				Tao <- eval((parse(text = system_mission_time)))
+				arg3<-paste0(" --mission-time ", Tao)
+			}else {
+				warning("system_mission_time not avaliable, SCRAM default will apply")
+			}
+		}else {
+			Tao = system_mission_time
+			arg3<-paste0(" --mission-time ", Tao)
+		}
+	}	
   
 
   ## test for gates priority, alarm, vote, fail for now as not implemnted  
@@ -54,10 +77,12 @@ scram.probability<-function(DF, list_out=FALSE)  {
   ## test for inhibit and warn about conversion to and
 
   do.call("ftree2mef",list(DF,DFname,"",TRUE))
+  
+
     
   mef_file<-paste0(DFname,'_mef.xml')
 if(file.exists(mef_file)) {
-  do.call("callSCRAM",list(DFname,"probability", " 1"))
+  do.call("callSCRAM",list(DFname,"probability", " 1", arg3))
 }else{
   stop(paste0("mef file does not exist for object ",DFname))
 }

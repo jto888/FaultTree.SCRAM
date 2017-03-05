@@ -12,3 +12,6 @@ scram.importance,
 scram.uncertainty
 )
 importFrom(FaultTree,test.ftree)
+importFrom("graphics", "abline", "box", "layout", "layout.show",
+             "lines", "mtext", "par", "plot", "polygon", "text")
+importFrom("stats", "smooth.spline")

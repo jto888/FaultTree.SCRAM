@@ -1,6 +1,6 @@
 Package: FaultTree.SCRAM
 Type: Package
-Title: Interaction between FaultTree on R and SCRAM
+Title: Interaction Between 'FaultTree' on R and "SCRAM"
 Version: 0.2.6
 License: GPL (>= 2)
 Date: 2017-2-27
@@ -10,5 +10,3 @@ Depends: FaultTree
 Description: Fault trees parepared using package FaultTree are given access to advanced calculations on SCRAM.
 URL: http://www.openreliability.org/fault-tree-analysis-on-r/
 LazyLoad: yes
-
-

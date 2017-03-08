@@ -81,14 +81,15 @@ for(gate in 1:length(gids)) {
 			tagname<-paste0("G_", gids[gate])
 		}
 
+		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
+
 		if(DF$Type[which(DF$ID==gids[gate])]==16) {
-			treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
-		}else{
-			treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
+			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
+		}else{		
+			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
 		}
 		
-		treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
-
+		
 		chids<-DF$ID[which(DF$CParent==gids[gate])]
 
 		for(child in 1:length(chids)) {

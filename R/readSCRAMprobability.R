@@ -185,7 +185,7 @@ outlist
 							
 	getProd<-function(in_line) {						
 				in_string<-as.character(in_line)			
-				first<- regexpr('probability=', in_line)+14			
+				first<- regexpr('probability=', in_line)+13		
 				last<-regexpr('contribution=', in_line)-3			
 				prod_strg <-substr(in_string, first, last)			
 							

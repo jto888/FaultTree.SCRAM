@@ -84,7 +84,8 @@ for(gate in 1:length(gids)) {
 		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
 
 		if(DF$Type[which(DF$ID==gids[gate])]==16) {
-			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
+			p1<-DF$P1[which(DF$ID==gids[gate])]
+			treeXML<-paste0(treeXML,'<',types[gate],' min=",p1,'">',lb)
 		}else{		
 			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
 		}

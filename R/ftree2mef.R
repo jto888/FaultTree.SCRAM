@@ -57,17 +57,14 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 lb<-"\n"
 ## Identify gates and events by ID
 ## establish gate types by gate ID's
-	gids<-c(DF$ID[which(DF$Type>9)],DF$ID[which(DF$Type==16)])
+	gids<-DF$ID[which(DF$Type>9)]
 	eids<-DF$ID[which(DF$Type<10)]
 	types<-NULL
 	for(gate in 1:length(gids)) {
 	if(DF$Type[which(DF$ID==gids[gate])]==10) {
-		types=c(types, "or")
-	}
-	if(DF$Type[which(DF$ID==gids[gate])]==16) {
-		types=c(types, "atleast")	
+	types=c(types, "or")
 	}else{
-		types=c(types, "and")
+	types=c(types, "and")
 	}
 	}
 
@@ -80,14 +77,8 @@ lb<-"\n"
 		}
 
 		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
-		
-## test for  atleast gate to specify min argurment		
-		if(DF$Type[which(DF$ID==gate)]==16)  {	
-			p1<-DF$P1[which(DF$ID==gate)]
-			treeXML<-paste0('<atleast min="',p1,'">',lb)
-		}else{	
-			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
-		}	
+
+		treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
 
 		chids<-DF$ID[which(DF$CParent==gids[gate])]
 

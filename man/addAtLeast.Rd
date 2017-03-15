@@ -41,7 +41,10 @@ Volume 3, Issue 4 American Institute of Chemical Engineers
 \examples{
 test_gate<-ftree.make(type="or", name="test")
 test_gate<-addAtLeast(test_gate, at=1, atleast=2, name="atleast test")
-
+test_gate<-addProbability(test_gate, at=2, prob=.5, tag="e1", name="test probability")
+test_gate<-addProbability(test_gate, at=2, prob=.5, tag="e2", name="test probability")
+test_gate<-addProbability(test_gate, at=2, prob=.5, tag="e3", name="test probability")
+test_gate<-addProbability(test_gate, at=1, prob=1e-10, tag="e0", name="insigmificant")
 }
 
 \keyword{ logic, risk, failure }

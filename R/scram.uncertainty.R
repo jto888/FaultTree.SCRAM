@@ -36,7 +36,9 @@ scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE), sys
 			Tao <- eval((parse(text = system_mission_time)))
 			mtime<-paste0(" --mission-time ", Tao)			
 		}else{
-			stop("mission_time not avaliable, SCRAM default will apply")
+			if(any(DF$Type==5) {
+			warning("mission_time not avaliable, SCRAM default has been applied")
+			}
 		}
 	}else{	
 		if (is.character(system_mission_time)) {

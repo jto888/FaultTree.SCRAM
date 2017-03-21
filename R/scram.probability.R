@@ -31,7 +31,10 @@ scram.probability<-function(DF, list_out=FALSE, system_mission_time=NULL)  {
 			Tao <- eval((parse(text = system_mission_time)))
 			arg3<-paste0(" --mission-time ", Tao)			
 		}else{
-			warning("mission_time not avaliable, SCRAM default will apply")
+			if(any(DF$Type==5) {
+			warning("mission_time not avaliable, SCRAM default has been applied")
+			}
+			
 		}
 	}else{	
 		if (is.character(system_mission_time)) {

@@ -31,7 +31,9 @@ scram.importance<-function(DF, system_mission_time=NULL)  {
 			Tao <- eval((parse(text = system_mission_time)))
 			arg3<-paste0(" --mission-time ", Tao)			
 		}else{
-			stop("mission_time not avaliable, SCRAM default will apply")
+			if(any(DF$Type==5)) {
+			warning("mission_time not avaliable, SCRAM default has been applied")
+			}
 		}
 	}else{	
 		if (is.character(system_mission_time)) {

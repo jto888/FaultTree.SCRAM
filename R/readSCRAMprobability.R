@@ -174,7 +174,9 @@ for(list_order in max_order:1)  {
 						
 		}				
 						
-		outDF<-rbind(temp_DF, outDF)				
+		outDF<-rbind(temp_DF, outDF)
+## Must eliminate value in temp_DF, else it will still exist when the next lower list_order is NULL
+		temp_DF<-NULL
 	}					
 						
 	outlist<-list(probability=as.numeric(pb_string), cutsets_prob=outDF)					

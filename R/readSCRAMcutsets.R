@@ -84,7 +84,7 @@ readSCRAMcutsets<-function(x, dir="")  {
 		if(t5) {
 ## encountering this node signifies the end of a previous collection of basic-event names
 ## so those need to be handled now, by adding to the appropriate list for last product_order with checking
-
+			product_order<-length(be_vector)
 			if(length(scram_cs_list)<product_order)  {
 				scram_cs_list[[product_order]]<-t(as.matrix(be_vector))
 			}else{

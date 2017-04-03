@@ -32,13 +32,13 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 	} 
   
   if(any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15)) {
-  stop("ALARM, PRIORITY, and VOTE gates are not supported in SCRAM calls")
+  stop("ALARM, PRIORITY, and VOTE gates are not implemented for SCRAM calls")
   }
   if(any(DF$Type==1) || any(DF$Type==2)|| any(DF$Type==3)) {
-  stop("Repairable model types: Active, Latent, and Demand not supported in SCRAM calls")
+  stop("Repairable model types: Active, Latent, and Demand not implemented for SCRAM calls")
   }
 ##  issue warning if default tags must be issued.
-	if(any(DF$Tag_Obj[which(DF$Type<10)]=="")) {
+	if(any(DF$Tag_Obj[which(DF$Type<6)]=="")) {
 	warning("Not all basic-events have tags, defaults applied")
 	}
   
@@ -55,10 +55,8 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
   }
   
 lb<-"\n"
-## Identify gates and events by ID
-## establish gate types by gate ID's
-## gids<-DF$ID[which(DF$Type>9)]		
-eids<-DF$ID[which(DF$Type<10)]		
+
+## eids<-DF$ID[which(DF$Type<10)]		
 types<-NULL		
 for(gate in 1:length(gids)) {		
 	if(DF$Type[which(DF$ID==gids[gate])]==10) {	
@@ -90,7 +88,7 @@ for(gate in 1:length(gids)) {
 			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
 		}
 		
-		
+## Define the children of this gate applying default tag names where needed
 		chids<-DF$ID[which(DF$CParent==gids[gate])]
 
 		for(child in 1:length(chids)) {
@@ -101,26 +99,35 @@ for(gate in 1:length(gids)) {
 				}
 				treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>',lb)
 			}else{
-				if(tagname=="")  {
+# Like gates, house events should not come with tags
+				if(DF$Type[which(DF$ID==chids[child])]==6) {
+					if(tagname=="")  {
+						tagname<-paste0("H_", chids[child])
+					}
+					treeXML<-paste0(treeXML,'<house-event name="',tagname,'"/>',lb)
+				}else{
+					if(tagname=="")  {
 ## must use source ID for MOE when assigning default tagname to events							
-					if(DF$MOE[which(DF$ID==chids[child])]<1)  {			
-						tagname<-paste0("E_", chids[child])		
-					}else{			
-						tagname<-paste0("E_", DF$MOE[which(DF$ID==chids[child])])		
-					}			
-				}
-				treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>',lb)
+						if(DF$MOE[which(DF$ID==chids[child])]<1)  {			
+							tagname<-paste0("E_", chids[child])		
+						}else{			
+							tagname<-paste0("E_", DF$MOE[which(DF$ID==chids[child])])		
+						}			
+					}
+					treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>',lb)
+				} ## added else block closure due to house tag code
 			}
 		}
-
 		treeXML<-paste0(treeXML, ' </',types[gate],'>',lb,'</define-gate>',lb)
-
-
 	}
 	
 	treeXML<-paste0(treeXML,'</define-fault-tree>',lb)
 
-	eventXML=paste0('<model-data>',lb)
+	modelXML<-paste0('<model-data>',lb)
+	
+## start of eventXML generation
+	eids<-DF$ID[which(DF$Type<6)]
+	eventXML<-""
 	for(event in 1:length(eids)) {
 ## cannot replicate MOE tags in mef, else get redifine basic-event error from scram
 		if(DF$MOE[which(DF$ID==eids[event])]<1)  {
@@ -310,15 +317,36 @@ eventXML<-paste0(eventXML, '</define-basic-event>',lb)
 		}
 	}
 	
-	eventXML=paste0(eventXML,'</model-data>',lb)
+## end of eventXML generation
 
-	XMLhead<-'<!DOCTYPE opsa-mef>
-	<opsa-mef>
-	<define-fault-tree name="'
+## start of houseXML generation
+	hids<-DF$ID[which(DF$Type==6)]
+	houseXML<-""
+	if(length(hids>0))  {
+		for(hevent in 1:length(hids))  {
+			tagname<-DF$Tag_Obj[which(DF$ID==hids[hevent])]
+			if(tagname=="")  {
+				tagname<-paste0("H_", hids[hevent])
+			}
+			houseXML<-paste0(houseXML, '<define-house-event name="', tagname, '">',lb)
+			hval="true"
+			if(DF$PBF[which(DF$ID==hids[hevent])]==0)  { hval="false" }
+			houseXML<-paste0(houseXML, '<constant value="', hval, '"/>',lb)
+			houseXML<-paste0(houseXML, '</define-house-event>',lb)
+		}
+	}
 
-	XMLfoot<-'</opsa-mef>'
 
-	outstring<-paste0(XMLhead,DFname,'">',lb,treeXML, eventXML, XMLfoot)
+	XMLhead<-paste0('<!DOCTYPE opsa-mef>',lb,
+	'<opsa-mef>',lb,
+	'<define-fault-tree name="',
+	DFname, '">',lb)
+
+
+	XMLfoot<-paste0('</model-data>',lb,'</opsa-mef>',lb)
+
+
+	outstring<-paste0(XMLhead, treeXML, modelXML, eventXML, houseXML, XMLfoot)
 
 	if(write_file==TRUE)  {
 		file_name<-paste0(dir,DFname,"_mef.xml")

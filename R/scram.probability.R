@@ -27,27 +27,33 @@ scram.probability<-function(DF, list_out=FALSE, system_mission_time=NULL)  {
 	arg3<-""
 	if (is.null(system_mission_time)) {
 		if(exists("mission_time")) {
-			system_mission_time<-"mission_time"	
+			system_mission_time<-"mission_time"
 			Tao <- eval((parse(text = system_mission_time)))
-			arg3<-paste0(" --mission-time ", Tao)			
+			arg3<-paste0(" --mission-time ", Tao)
 		}else{
 			if(any(DF$Type==5)) {
-			warning("mission_time not avaliable, SCRAM default has been applied")
+			warning("mission_time not avaliable, SCRAM default has been assumed")
 			}
 			
 		}
+## A mission time value could be set here, to over-ride an original mission_time
+## But only events marked as <mission-time/> in MEF will be effected.
+## it is most effective to utilize only mission_time as an envirionment variable setting.
+## Rebuild the tree, if necessary for iteration of mission_time.
+## Expect to depreciate this feature, do not document
 	}else{	
 		if (is.character(system_mission_time)) {
 			if (exists("system_mission_time")) {
 				Tao <- eval((parse(text = system_mission_time)))
 				arg3<-paste0(" --mission-time ", Tao)
 			}else {
-				warning("system_mission_time not avaliable, SCRAM default will apply")
+				warning("system_mission_time not avaliable, SCRAM default has been assumed")
 			}
 		}else {
 			Tao = system_mission_time
 			arg3<-paste0(" --mission-time ", Tao)
 		}
+## end of depreciated block
 	}	
   
 

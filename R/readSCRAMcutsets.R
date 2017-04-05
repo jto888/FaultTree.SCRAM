@@ -2,9 +2,9 @@
 # Copyright 2017 OpenReliability.org
 #
 # A line-by-line parser of the output files from minimal cutset analysis
-# methods mocus, bdd or zbdd from SCRAM http://scram-pra.org/ 
+# methods mocus, bdd or zbdd from SCRAM http://scram-pra.org/
 # returning a list of cutsets with basic-elements identified by tag.
-# 
+#
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,14 +24,14 @@
 readSCRAMcutsets<-function(x, dir="")  {
 
 	fileName<-paste0(dir,x)
-## check that fileName provided is indeed for cutsets and indeed exists	
-	
+## check that fileName provided is indeed for cutsets and indeed exists
+
 	conn <- file(fileName,open="r")
 	on.exit(close(conn))
 
 	be_vector<-NULL
 	scram_cs_list<-list(NULL)
-	
+
 	i=1
 	while ( TRUE ) {
 		linn = readLines(conn, n = 1)
@@ -99,6 +99,26 @@ readSCRAMcutsets<-function(x, dir="")  {
 		i=i+1
 ## closure of the line reading loop
 	}
-	
+
+	for( list_mat in 1:length(scram_cs_list) ) {
+		if(!is.null(scram_cs_list[[list_mat]])) {
+			if(list_mat==1)  {
+				if(nrow(scram_cs_list[[list_mat]])>1)  {
+					M2<-matrix(sort(scram_cs_list[[list_mat]]), ncol=1)
+					scram_cs_list[[list_mat]]<-M2
+				}
+			}else{
+				if(nrow(scram_cs_list[[list_mat]]) > 1)  {
+			## first sort each row
+				M2<-t(apply(scram_cs_list[[list_mat]],1,sort))
+			## now sort by columns, preserving the sorted rows
+				## scram_cs_list[[list_mat]]<- sort.by.cols(M2)
+				scram_cs_list[[list_mat]]<-M2[do.call(order, as.data.frame(M2)),]
+				}
+			}
+		}
+	}
+
+
 	scram_cs_list
 }

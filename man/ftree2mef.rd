@@ -7,7 +7,7 @@
 }
 
 \usage{
-ftree2mef(DF, DFname="", dir="", write_file=FALSE)
+ftree2mef(DF, DFname="", dir="", write_file=FALSE, system_mission_time=NULL)
 }
 
 \arguments{
@@ -15,6 +15,8 @@ ftree2mef(DF, DFname="", dir="", write_file=FALSE)
 \item{DFname}{A string of the underlying ftree dataframe, intended for use when calling (using do.call) inside function environments where this name information has been lost}
 \item{dir}{A character string for an absolute directory in which R can read and write.}
 \item{write_file}{A logical controlling whether to perform the write operation.}
+\item{system_mission_time}{A dummy argument holder to be set to global environment variable mission_time, if it exists.
+ any value other than NULL will be ignored.}
 }
 
 \value{

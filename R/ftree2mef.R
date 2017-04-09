@@ -90,9 +90,9 @@ for(gate in 1:length(gids)) {
 
 	treeXML=""
 	for(gate in 1:length(gids)) {
-		if(gate==1) {
-			tagname="top"
-		}else{
+	  # Name this element
+	  tagname<-DF$Tag_Obj[which(DF$ID==gids[gate])]
+		if(tagname=="") {
 			tagname<-paste0("G_", gids[gate])
 		}
 

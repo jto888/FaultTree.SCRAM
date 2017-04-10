@@ -76,15 +76,15 @@ lb<-"\n"
 ## eids<-DF$ID[which(DF$Type<10)]
 types<-NULL
 for(gate in 1:length(gids)) {
-	if(DF$Type[which(DF$ID==gids[gate])]==10) {
-		types=c(types, "or")
-	}else{
-		if(DF$Type[which(DF$ID==gids[gate])]==16) {
-		types=c(types, "atleast")
-		}else{
-		types=c(types, "and")
-		}
-	}
+  if (DF$Type[which(DF$ID==gids[gate])]==10) {
+    types <- c(types, "or")
+  } else if (DF$Type[which(DF$ID==gids[gate])]==16) {
+    types <- c(types, "atleast");
+  } else if (DF$Type[which(DF$ID==gids[gate])]==17) {
+    types <- c(types, "passthrough");
+  } else {
+    types <- c(types, "and");
+  }
 }
 
 
@@ -98,11 +98,14 @@ for(gate in 1:length(gids)) {
 
 		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
 
-		if(DF$Type[which(DF$ID==gids[gate])]==16) {
+		if (DF$Type[which(DF$ID==gids[gate])]==16) {
 			p1<-DF$P1[which(DF$ID==gids[gate])]
 			treeXML<-paste0(treeXML,'<',types[gate],' min="',p1,'">',lb)
-		}else{
-			treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
+		} else {
+		  if (DF$Type[which(DF$ID==gids[gate])]!=17) {
+		    # no <and>, <or>, etc. for a passthrough (NULL) gate
+	      treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
+		  }
 		}
 
 ## Define the children of this gate applying default tag names where needed
@@ -135,7 +138,10 @@ for(gate in 1:length(gids)) {
 				} ## added else block closure due to house tag code
 			}
 		}
-		treeXML<-paste0(treeXML, ' </',types[gate],'>',lb,'</define-gate>',lb)
+		if (DF$Type[which(DF$ID==gids[gate])]!=17) {
+		  treeXML<-paste0(treeXML, ' </',types[gate],'>',lb)
+		}
+		treeXML<-paste0(treeXML,'</define-gate>',lb)
 	}
 
 	treeXML<-paste0(treeXML,'</define-fault-tree>',lb)
@@ -357,6 +363,22 @@ eventXML<-paste0(eventXML, '</define-basic-event>',lb)
 			houseXML<-paste0(houseXML, '</define-house-event>',lb)
 		}
 	}
+	
+## start of undevelopedXML generation
+	uids<-DF$ID[which(DF$Type==7)]
+	undevelopedXML<-""
+	if(length(uids>0))  {
+	  for(uevent in 1:length(uids))  {
+	    tagname<-DF$Tag_Obj[which(DF$ID==uids[uevent])]
+	    if(tagname=="")  {
+	      tagname<-paste0("U_", hids[uevent])
+	    }
+	    undevelopedXML<-paste0(undevelopedXML, '<define-basic-event name="', tagname, '">',lb)
+	    undevelopedXML<-paste0(undevelopedXML, '<attributes> <attribute name="flavor" value="undeveloped"/> </attributes>',lb)
+	    undevelopedXML<-paste0(undevelopedXML, '<float value="', DF$PBF[which(DF$ID==uids[uevent])] , '"/>',lb)
+	    undevelopedXML<-paste0(undevelopedXML, '</define-basic-event>',lb)
+	  }
+	}
 
 
 	XMLhead<-paste0('<!DOCTYPE opsa-mef>',lb,
@@ -368,7 +390,7 @@ eventXML<-paste0(eventXML, '</define-basic-event>',lb)
 	XMLfoot<-paste0('</model-data>',lb,'</opsa-mef>',lb)
 
 
-	outstring<-paste0(XMLhead, treeXML, modelXML, eventXML, houseXML, XMLfoot)
+	outstring<-paste0(XMLhead, treeXML, modelXML, eventXML, houseXML, undevelopedXML, XMLfoot)
 
 	if(write_file==TRUE)  {
 		file_name<-paste0(dir,DFname,"_mef.xml")

@@ -76,7 +76,8 @@ scram.probability<-function(DF, list_out=FALSE, system_mission_time=NULL)  {
   } 
   ## test for PBF value in all basic component events (except Dynamic) - fail if not all >0
   ## ASSUME THAT DYNAMIC EVENTS WILL BE TYPE= 9
-  event_probs<-DF$PBF[which(DF$Type<9)]
+	## Allow Undeveloped events to have probability 0 of occuring
+  event_probs<-DF$PBF[which(DF$Type<9&DF$Type!=7)]
   if(any(event_probs<=0)) {
 	stop("incomplete basic-event probability data in model")
    }

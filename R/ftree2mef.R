@@ -345,6 +345,7 @@ for(gate in 1:length(gids)) {
 					stop(paste0("must have fail rate at DF$CFR[",which(DF$ID==eids[event]),"]"))
 				}
 			}
+## for periodic-test the aplication of repair rate, mu (1/CRT), 
 ## is the difference between 4 and 5 parameter representations.
 			if(DF$CRT[which(DF$ID==eids[event])]>0) {
 				eventXML<-paste0(eventXML, '<float value="', 1/DF$CRT[which(DF$ID==eids[event])], '"/>',lb)
@@ -360,6 +361,7 @@ for(gate in 1:length(gids)) {
 				stop(paste0("must have inspection interval at DF$P2[",which(DF$ID==eids[event]),"]"))
 			}
 
+## There is no alternative, the mission_time must be set to pass in Latent as periodic-test
 
 			MT<-DF$P2[which(DF$ID==min(DF$ID))]
 				if(!MT>0) {stop("system_mission_time not set for exposed events")

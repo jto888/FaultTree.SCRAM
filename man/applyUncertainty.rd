@@ -14,22 +14,25 @@ applyUncertainty(DF, on, what="prob", deviate, param)
 \item{on}{ The ID of the basic element node to be defined uncertain.}
 \item{what}{A string identifying the basic-event parameter that uncertainty is to be applied to. Only default of "prob" has been implemented.}
 \item{deviate}{A string signifying the deviate to be applied. Implemented deviate types "uniform","normal","lognormal" have been implemented.}
-\item{param}{A vector of the appropriate deviate parameters in the order sepcified in the Open-PSA Model Exchange Format}
+\item{param}{A single value, or vector of the appropriate deviate parameters completing the variation definition as discussed in Details below.}
 }
 
 \value{
 Returns the input fault tree dataframe amended with entries defining an uncertainty deviate for the probability of the  selected event.
 }
-
+ 
 \details{
   Application of the deviate has no impact on the tree visualization or functionality, except to provide input for uncertainty analysis by the SCRAM program.
   SCRAM is an external program that must be installed on the system. Package FaultTree.SCRAM has been developed to facilitate interoperatility between the FaultTree package and SCRAM.
-  SCRAM implements the Open-PSA Model Exchange Format, which defines the deviate parameters. Three uncertainty deviates types have been implemented as per the MEF documentation.
-  The deviate type argument entries can be "uniform", "normal", or "lognormal". The parameters are passed in the param argument as a vector in the order as discussed in the MEF documentation
-  except that the mean (probability in all cases) has already been entered in the basic element entry such as the addProbability,  prob argument. So, only the remaining parameters are
-  entered in the param argument to applyUncertainty. For uniform-deviate the param=c([lower_bound_value], [upper_bound_value]). For the normal-deviate only the std deviation value is provided
-  as a single param. For the lognormal-deviate parameters are entered for the Err and confidence limit as documented for the MEF. Since the lower and upper bounds to the uniform-deviate must
-  exactly straddle the mean, it is wise to enter them as c(mean-half_range, mean+half_range).  
+  While the Open-PSA Model Exchange Format (MEF) defines the deviate parameters to be passed to SCRAM, this FaultTree.SCRAM implementation provides some
+  simplification of deviate parameter entry. The mean under uncertainty (the 'what') is already obtainable in the basic element entry. So, only certain remaining
+  information is required to form the proper set of MEF parameters.
+  -For uniform-deviate only the size of the range is required param=([upper_bound_value]-[lower_bound_value]). This range value will be used to straddle the mean upon MEF entry.
+   Allowing back-portability with earlier man page instructions if two values are provided in a vector for param they will be taken as a c([lower_bound_value],[upper_bound_value]) entry.
+  -For the normal-deviate only the standard deviation value passed as the param argument.
+  -For the lognormal-deviate only the sigma value (standard deviation of the log-transformed variates) is passed as the param argument.
+   Allowing back-portability with earlier man page instructions if two values are provided in a vector for param they will be taken as a c([ErrFunc],[ConfLim]) entry.
+  It may be helpful to review parameter_conversion for relationship between various parameters.
 }
 
 \references{

@@ -24,10 +24,9 @@ Optionally, this vector will be written to a file taking the name of the object 
 }
 
 \details{
-Only coherent fault trees are handled. Fault trees incorporating PIORITY, ALARM,  or VOTE
- gates are excluded, as are fault trees incorporating Active, Latent, or Demand basic elements.
- INHIBIT gates are converted to AND. At this time (version < 0.1) there is no attempt to capture
- stochastic layer input, only basic-event probability is recorded.
+Only coherent fault trees are handled. Fault trees incorporating  ALARM, or VOTE
+ gates are excluded, as are fault trees incorporating Demand type basic elements.
+ INHIBIT and PRIORITY gates are converted to AND.
 }
 
 \references{

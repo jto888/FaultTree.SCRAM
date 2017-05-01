@@ -36,12 +36,12 @@ scram.cutsets<-function(DF, method="mocus")  {
 	stop(paste0("no children at gate(s) ID= ", setdiff(gids, pids)))
 	}
   ## test for gates priority, alarm, vote, fail for now as not implemnted
-   if(any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15)) {
-  stop("ALARM, PRIORITY, and VOTE gates are not supported in SCRAM calls")
+   if(any(DF$Type==13) || any(DF$Type==15)) {
+  stop("ALARM and VOTE gates are not supported in SCRAM calls")
   }
-  ## test for component types other than probability or exposed, fail if non-coherent  
-  if(any(DF$Type==1) || any(DF$Type==2)|| any(DF$Type==3)) {
-  stop("Repairable model types: Active, Latent, and Demand not supported in SCRAM calls")
+  ## test for component types other than probability,exposed fail if non-coherent  
+  if(any(DF$Type==2)|| any(DF$Type==3)) {
+  stop("Repairable model types: Latent, and Demand not supported in SCRAM calls")
   } 
 
   #ToDo??

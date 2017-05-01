@@ -19,46 +19,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-scram.probability<-function(DF, list_out=FALSE, system_mission_time=NULL)  {
+scram.probability<-function(DF, list_out=FALSE)  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
   DFname<-paste(deparse(substitute(DF)))
  
 	arg3<-""
-	if (is.null(system_mission_time)) {
-		if(exists("mission_time")) {
-			system_mission_time<-"mission_time"
-			Tao <- eval((parse(text = system_mission_time)))
-			arg3<-paste0(" --mission-time ", Tao)
-		}else{
-			if(any(DF$Type==5)) {
-			warning("mission_time not avaliable, SCRAM default has been assumed")
-			}
-			
-		}
-## A mission time value could be set here, to over-ride an original mission_time
-## But only events marked as <mission-time/> in MEF will be effected.
-## it is most effective to utilize only mission_time as an envirionment variable setting.
-## Rebuild the tree, if necessary for iteration of mission_time.
-## Expect to depreciate this feature, do not document
-	}else{	
-		if (is.character(system_mission_time)) {
-			if (exists("system_mission_time")) {
-				Tao <- eval((parse(text = system_mission_time)))
-				arg3<-paste0(" --mission-time ", Tao)
-			}else {
-				warning("system_mission_time not avaliable, SCRAM default has been assumed")
-			}
-		}else {
-			Tao = system_mission_time
-			arg3<-paste0(" --mission-time ", Tao)
-		}
-## end of depreciated block
-	}	
+	mt<-DF$P2[which(DF$ID==min(DF$ID))]
+	if(!mt>0 && (any(DF$Type==1) || any(DF$Type==2))) {
+			stop("mission_time not avaliable for application on Active or Latent events")
+	}
+	if(mt>0) {
+		arg3<-paste0(" --mission-time ", mt)
+	}
+
   
 
-  ## test for gates priority, alarm, vote, fail for now as not implemnted  
-  ## test for component types other than probability,exposed, or sthochastic.fail if non-coherent
+  ## test for gates alarm, vote, fail for now as not implemnted  
+  ## test for pure demand fail if found
   ## test that there are no empty gates, all tree leaves must be basic component events
   ## Identify gates and events by ID
 	gids<-DF$ID[which(DF$Type>9)]
@@ -70,9 +48,9 @@ scram.probability<-function(DF, list_out=FALSE, system_mission_time=NULL)  {
    if(any(DF$Type==13) || any(DF$Type==15)) {
   stop("ALARM, and VOTE gates are not supported in SCRAM calls")
   }
-  ## test for component types other than probability or exposed, fail if non-coherent  
-  if(any(DF$Type==3)) {
-  stop("Pure Demand not supported in SCRAM calls")
+  ## test for pure Demand
+  if( any(DF$Type==3)) {
+  stop("Pure Demand event type is not supported in SCRAM calls")
   } 
   ## test for PBF value in all basic component events (except Dynamic) - fail if not all >0
   ## ASSUME THAT DYNAMIC EVENTS WILL BE TYPE= 9

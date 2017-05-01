@@ -19,44 +19,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE), system_mission_time=NULL)  {
+scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE))  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
 ## Test that uncertainty exists
   if(sum(DF$UType)==0) {
   stop("No uncertainty definition has been applied")
   }
-  
+
   DFname<-paste(deparse(substitute(DF)))
   
-	mtime<-""
-	if (is.null(system_mission_time)) {
-		if(exists("mission_time")) {
-			system_mission_time<-"mission_time"	
-			Tao <- eval((parse(text = system_mission_time)))
-			mtime<-paste0(" --mission-time ", Tao)			
-		}else{
-			if(any(DF$Type==5)) {
-			warning("mission_time not avaliable, SCRAM default has been applied")
-			}
-		}
-	}else{	
-		if (is.character(system_mission_time)) {
-			if (exists("system_mission_time")) {
-				Tao <- eval((parse(text = system_mission_time)))
-				mtime<-paste0(" --mission-time ", Tao)
-			}else {
-				stop("exposure object does not exist")
-			}
-		}else {
-			Tao = system_mission_time
-			mtime<-paste0(" --mission-time ", Tao)
-		}
+	arg3<-""
+	mt<-DF$P2[which(DF$ID==min(DF$ID))]
+	if(!mt>0 && (any(DF$Type==1) || any(DF$Type==2) || any(DF$EType==2))) {
+			stop("mission_time not avaliable for application on Weibull, Active or Latent events")
 	}
- 
+	mtime<-""
+	if(mt>0) {
+		mtime<-paste0(" --mission-time ",mt)
+	}
   
-  ## test for gates priority, alarm, vote, fail for now as not implemnted  
-  ## test for component types other than probability,exposed, or sthochastic.fail if non-coherent
+  ## test for gates alarm, vote, fail for now as not implemnted  
+  ## test for pure demand fail if found
   ## test that there are no empty gates, all tree leaves must be basic component events
   ## Identify gates and events by ID
 	gids<-DF$ID[which(DF$Type>9)]
@@ -65,12 +49,12 @@ scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE), sys
 	stop(paste0("no children at gate(s) ID= ", setdiff(gids, pids)))
 	}
   ## test for gates priority, alarm, vote, fail for now as not implemnted
-   if(any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15)) {
-  stop("ALARM, PRIORITY, and VOTE gates are not supported in SCRAM calls")
+   if(any(DF$Type==13) || any(DF$Type==15)) {
+  stop("ALARM, and VOTE gates are not supported in SCRAM calls")
   }
-  ## test for component types other than probability or exposed, fail if non-coherent  
-  if(any(DF$Type==1) || any(DF$Type==2)|| any(DF$Type==3)) {
-  stop("Repairable model types: Active, Latent, and Demand not supported in SCRAM calls")
+  ## test for pure Demand
+  if( any(DF$Type==3)) {
+  stop("Pure Demand event type is not supported in SCRAM calls")
   } 
   ## test for PBF value in all basic component events (except Dynamic) - fail if not all >0
   ## ASSUME THAT DYNAMIC EVENTS WILL BE TYPE= 9
@@ -78,10 +62,11 @@ scram.uncertainty<-function(DF, ntrials=1000, nbin=20, show=c(FALSE, FALSE), sys
   if(any(event_probs<=0)) {
 	stop("incomplete basic-event probability data in model")
    }
-    
+  
   ## it is possible that Dynamic components will have probability generated within SCRAM
     #ToDo??
   ## test for INHIBIT and warn about conversion to AND
+  
   trials<-paste0(" --num-trials ",ntrials)
   bins<-paste0("  --num-bins ", nbin," --num-quantiles ", nbin)
   arg3<-paste0(trials,bins,mtime)

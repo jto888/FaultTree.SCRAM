@@ -14,15 +14,27 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- addAtLeast<-function (DF, at, atleast, name="",name2="", description="")  {
-		
+ addAtLeast<-function (DF, at, atleast, tag="", name="",name2="", description="")  {
+	if(!test.ftree(DF)) stop("first argument must be a fault tree")
+
+	at <- tagconnect(DF, at)
+
+	if(tag!="")  {
+		if (length(which(DF$Tag == tag) != 0)) {
+			stop("tag is not unique")
+		}
+		prefix<-substr(tag,1,2)
+		if(prefix=="E_" || prefix=="G_" || prefix=="H_") {
+			stop("Prefixes 'E_', 'G_', and 'H_' are reserved for auto-generated tags.")
+		}
+	}
+
 ## Model test
-##	if(any(DF$Type<4)|| any(DF$Type==13) || any(DF$Type==14) || any(DF$Type==15) ){
-	if(any(DF$Type<4)|| (any(DF$Type>12)&&any(DF$Type<16))) {
+	if(any(DF$Type==3)|| any(DF$Type==13) || any(DF$Type==15)) {
 		stop("PRA system event called for in RAM model")
 	}
 
-  	tp <-16
+	tp <-16
 	
 	parent<-which(DF$ID== at)
 	if(length(parent)==0) {stop("connection reference not valid")}
@@ -55,13 +67,13 @@
 		EType=	0	,
 		P1=	p1	,
 		P2=	-1	,
-		Tag_Obj=	""	,
+		Tag_Obj=	tag	,
 		Name=	name	,
 		Name2=	name2	,
 		Description=	description	,
 		UType=	0	,
-		UP1=	-1	,
-		UP2=	-1	
+		UP1=	0	,
+		UP2=	0	
 	)
 
 

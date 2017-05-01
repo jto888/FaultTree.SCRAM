@@ -193,10 +193,11 @@ for(list_order in max_order:1)  {
 	}
 	sort_string<-paste0("x[order(", col_arg, "na.last=F,decreasing=F),]" )
 	outDF<-eval(parse(text=sort_string))
+	row.names(outDF)<-as.character(1:length(outDF[,1])) 
 	
 	outlist<-list(probability=as.numeric(pb_string), cutsets_prob=outDF)
-
-	outlist<-list(probability=as.numeric(pb_string), cutsets_prob=outDF)
+## not sure why this line was duplicated
+##	outlist<-list(probability=as.numeric(pb_string), cutsets_prob=outDF)
 
 outlist
 }

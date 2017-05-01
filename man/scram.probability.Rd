@@ -7,7 +7,7 @@
 }
 
 \usage{
-scram.probability(DF, list_out=FALSE, system_mission_time=NULL)
+scram.probability(DF, list_out=FALSE)
 }
 
 \arguments{
@@ -16,9 +16,6 @@ Fault tree basic elements must be either probability or exposed types, INHIBIT g
 Fault tree shall not contain PRIORITY, ALARM nor VOTE gates, voting is [to be] handled by the atleast gate type.}
 \item{list_out}{A logical indicating whether the list output from readSCRAMprobability should be returned. 
 Alternatively for FALSE only a single probaility value will be returned.}
-\item{system_mission_time}{An entry that may alter SCRAM default for mission time to be applied to exposed elements.
- This may be a value or label of a global scalar variable. If a global object named 'mission_time' exists it will 
- be taken as default for this system_mission_time argument.}
 }
 
 \value{

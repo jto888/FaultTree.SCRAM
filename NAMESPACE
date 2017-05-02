@@ -12,7 +12,8 @@ scram.probability,
 scram.importance,
 scram.uncertainty
 )
-importFrom(FaultTree,test.ftree)
+importFrom(FaultTree,test.ftree, tagconnect)
 importFrom("graphics", "abline", "box", "layout", "layout.show",
              "lines", "mtext", "par", "plot", "polygon", "text")
 importFrom("stats", "smooth.spline")
+importFrom("stats", "qnorm")

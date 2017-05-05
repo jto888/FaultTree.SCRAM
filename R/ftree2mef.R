@@ -92,61 +92,70 @@ for(gate in 1:length(gids)) {
 	treeXML=""
 
 	for(gate in 1:length(gids)) {
+## cannot replicate MOB tags in mef, else get redifine gate error from scram
+		if(DF$MOE[which(DF$ID==gids[gate])]<1)  {
+		
 ## tagname at DF[which(DF$ID==min(DF$ID)),] is already set to "top"
 ## gates might now have tags issued.
 #		if(gate==1) {
 #			tagname="top"
 #		}else{
-		tagname<-DF$Tag_Obj[which(DF$ID==gids[gate])]
-		if(tagname=="")  {
-			tagname<-paste0("G_", gids[gate])
-		}
-
-		treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
-
-		if(DF$Type[which(DF$ID==gids[gate])]==16) {
-			p1<-DF$P1[which(DF$ID==gids[gate])]
-			treeXML<-paste0(treeXML,'<',types[gate],' min="',p1,'">',lb)
-		}else{
-			if(types[gate]!="passthrough") {
-				treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
+			tagname<-DF$Tag_Obj[which(DF$ID==gids[gate])]
+			if(tagname=="")  {
+				tagname<-paste0("G_", gids[gate])
 			}
-		}
 
-## Define the children of this gate applying default tag names where needed
-		chids<-DF$ID[which(DF$CParent==gids[gate])]
+			treeXML<-paste0(treeXML,'<define-gate name="',tagname, '">',lb)
 
-		for(child in 1:length(chids)) {
-			tagname<-DF$Tag_Obj[which(DF$ID==chids[child])]
-			if(DF$Type[which(DF$ID==chids[child])]>9) {
-				if(tagname=="")  {
-					tagname<-paste0("G_", chids[child])
-				}
-				treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>',lb)
+			if(DF$Type[which(DF$ID==gids[gate])]==16) {
+				p1<-DF$P1[which(DF$ID==gids[gate])]
+				treeXML<-paste0(treeXML,'<',types[gate],' min="',p1,'">',lb)
 			}else{
-#  house events should not come with tags
-				if(DF$Type[which(DF$ID==chids[child])]==9) {
+				if(types[gate]!="passthrough") {
+					treeXML<-paste0(treeXML,'<',types[gate],'>',lb)
+				}
+			}
+
+	## Define the children of this gate applying default tag names where needed
+			chids<-DF$ID[which(DF$CParent==gids[gate])]
+
+			for(child in 1:length(chids)) {
+				tagname<-DF$Tag_Obj[which(DF$ID==chids[child])]
+				if(DF$Type[which(DF$ID==chids[child])]>9) {
 					if(tagname=="")  {
-						tagname<-paste0("H_", chids[child])
-					}
-					treeXML<-paste0(treeXML,'<house-event name="',tagname,'"/>',lb)
-				}else{
-					if(tagname=="")  {
-## must use source ID for MOE when assigning default tagname to events
+	## must use source ID for MOE when assigning default tagname to events
 						if(DF$MOE[which(DF$ID==chids[child])]<1)  {
-							tagname<-paste0("E_", chids[child])
+							tagname<-paste0("G_", chids[child])
 						}else{
-							tagname<-paste0("E_", DF$MOE[which(DF$ID==chids[child])])
+							tagname<-paste0("G_", DF$MOE[which(DF$ID==chids[child])])
 						}
 					}
-					treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>',lb)
-				} ## added else block closure due to house tag code
+					treeXML<-paste0(treeXML,'<gate name="',tagname,'"/>',lb)
+				}else{
+	#  house events should not come with tags
+					if(DF$Type[which(DF$ID==chids[child])]==9) {
+						if(tagname=="")  {
+							tagname<-paste0("H_", chids[child])
+						}
+						treeXML<-paste0(treeXML,'<house-event name="',tagname,'"/>',lb)
+					}else{
+						if(tagname=="")  {
+	## must use source ID for MOE when assigning default tagname to events
+							if(DF$MOE[which(DF$ID==chids[child])]<1)  {
+								tagname<-paste0("E_", chids[child])
+							}else{
+								tagname<-paste0("E_", DF$MOE[which(DF$ID==chids[child])])
+							}
+						}
+						treeXML<-paste0(treeXML,'<basic-event name="',tagname,'"/>',lb)
+					} ## added else block closure due to house tag code
+				}
 			}
+			if(types[gate]!="passthrough") {
+				treeXML<-paste0(treeXML, ' </',types[gate],'>',lb)
+			}
+			treeXML<-paste0(treeXML,'</define-gate>',lb)
 		}
-		if(types[gate]!="passthrough") {
-			treeXML<-paste0(treeXML, ' </',types[gate],'>',lb)
-		}
-		treeXML<-paste0(treeXML,'</define-gate>',lb)
 	}
 
 	treeXML<-paste0(treeXML,'</define-fault-tree>',lb)

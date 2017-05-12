@@ -14,11 +14,22 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- addAtLeast<-function (DF, at, atleast, tag="", name="",name2="", description="")  {
+ addAtLeast<-function (DF, at, atleast, tag="", label="", name="",name2="", description="")  {
 	if(!test.ftree(DF)) stop("first argument must be a fault tree")
 
 	at <- tagconnect(DF, at)
 
+	if(label!="")  {
+		if(any(DF$Name!="") || any(DF$Name2!="")) {
+			stop("Cannot use label once name convention has been established.")
+		}
+	}
+	if(any(DF$Label!="")) {
+		if(name!="" || name2!="") {
+			stop("Cannot use name convention once label has been established.")
+		}
+	}
+	
 	if(tag!="")  {
 		if (length(which(DF$Tag == tag) != 0)) {
 			stop("tag is not unique")
@@ -55,8 +66,7 @@
 		Dfrow<-data.frame(
 		ID=	thisID	,
 		GParent=	at	,
-		CParent=	at	,
-		Level=	DF$Level[parent]+1	,
+		Tag=	tag	,
 		Type=	tp	,
 		CFR=	-1	,
 		PBF=	-1	,
@@ -67,9 +77,12 @@
 		EType=	0	,
 		P1=	p1	,
 		P2=	-1	,
-		Tag_Obj=	tag	,
+		Collapse=	0	,
+		Label=	label	,
 		Name=	name	,
 		Name2=	name2	,
+		CParent=	at	,
+		Level=	DF$Level[parent]+1	,
 		Description=	description	,
 		UType=	0	,
 		UP1=	0	,

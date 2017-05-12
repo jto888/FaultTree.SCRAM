@@ -6,7 +6,7 @@
 \description{Modifies an existing fault tree with the addition of an atleast gate, specifically for SCRAM processing.}
 
 \usage{
-addAtLeast(DF, at, atleast, tag="", name="",name2="", description="")
+addAtLeast(DF, at, atleast, tag="", label="", name="",name2="", description="")
 }
 
 \arguments{
@@ -14,6 +14,7 @@ addAtLeast(DF, at, atleast, tag="", name="",name2="", description="")
 \item{at}{ The ID or tag name of the parent node for this addition.}
 \item{atleast}{A value for the minimum combination size for consideration. }
 \item{tag}{ A very short identifying string (typically 5 characters or less) uniquely identifying a basic event for minimal cutset evaluation}
+\item{label}{An identifying string for the logic gate. Use of label in ftree.make defines the convention for rest of tree construction.}
 \item{name}{ A short identifying string  (typically less than 24 characters)}
 \item{name2}{ A second line, if needed for the identifying string label}
 \item{description}{ An optional string providing more detail for this event.}

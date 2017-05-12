@@ -41,7 +41,7 @@ ftree2mef<-function(DF, DFname="", dir="", write_file=FALSE)  {
 	stop("Pure Demand event not implemented for SCRAM calls")
 	}
 ##  issue warning if default tags must be issued.
-	if(any(DF$Tag_Obj[which(DF$Type<9)]=="")) {
+	if(any(DF$Tag[which(DF$Type<9)]=="")) {
 	warning("Not all basic-events have tags, defaults applied")
 	}
 
@@ -100,7 +100,7 @@ for(gate in 1:length(gids)) {
 #		if(gate==1) {
 #			tagname="top"
 #		}else{
-			tagname<-DF$Tag_Obj[which(DF$ID==gids[gate])]
+			tagname<-DF$Tag[which(DF$ID==gids[gate])]
 			if(tagname=="")  {
 				tagname<-paste0("G_", gids[gate])
 			}
@@ -120,7 +120,7 @@ for(gate in 1:length(gids)) {
 			chids<-DF$ID[which(DF$CParent==gids[gate])]
 
 			for(child in 1:length(chids)) {
-				tagname<-DF$Tag_Obj[which(DF$ID==chids[child])]
+				tagname<-DF$Tag[which(DF$ID==chids[child])]
 				if(DF$Type[which(DF$ID==chids[child])]>9) {
 					if(tagname=="")  {
 	## must use source ID for MOE when assigning default tagname to events
@@ -172,7 +172,7 @@ for(gate in 1:length(gids)) {
 	for(event in 1:length(eids)) {
 ## cannot replicate MOE tags in mef, else get redifine basic-event error from scram
 		if(DF$MOE[which(DF$ID==eids[event])]<1)  {
-			tagname<-DF$Tag_Obj[which(DF$ID==eids[event])]
+			tagname<-DF$Tag[which(DF$ID==eids[event])]
 			if(tagname=="")  {
 				tagname<-paste0("E_", eids[event])
 			}
@@ -394,7 +394,7 @@ for(gate in 1:length(gids)) {
 	houseXML<-""
 	if(length(hids>0))  {
 		for(hevent in 1:length(hids))  {
-			tagname<-DF$Tag_Obj[which(DF$ID==hids[hevent])]
+			tagname<-DF$Tag[which(DF$ID==hids[hevent])]
 			if(tagname=="")  {
 				tagname<-paste0("H_", hids[hevent])
 			}

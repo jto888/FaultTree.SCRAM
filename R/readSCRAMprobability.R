@@ -49,7 +49,12 @@ readSCRAMprobability<-function(x, dir="")  {
 		if(test_line) {
 			in_string<-as.character(linn[1])
 			first<- regexpr('probability=', linn[1])+13
-			last<-nchar(linn[1])-2
+## With SCRAM version >11.6 there was an addition of 'distribution' after 'probability' in this line
+			if((nchar(linn[1])-2)>(first+13)) {
+				last<-regexpr('distribution', linn[1])-3
+			}else{
+				last<-nchar(linn[1])-2
+			}
 			pb_string = substr(in_string, first, last)
 ## We are done reading this line so get next line
 			next

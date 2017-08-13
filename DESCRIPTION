@@ -1,7 +1,7 @@
 Package: FaultTree.SCRAM
 Type: Package
 Title: Interaction Between 'FaultTree' on R and "SCRAM"
-Version: 0.2.8
+Version: 0.2.8.1
 License: GPL (>= 3)
 Date: 2017-5-10
 Author: David J. Silkworth

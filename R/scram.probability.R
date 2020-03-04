@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##
-scram.probability<-function(DF, list_out=FALSE)  {
+scram.probability<-function(DF, method="bdd", list_out=FALSE)  {
   if(!FaultTree::test.ftree(DF)) stop("first argument must be a fault tree")
   
   DFname<-paste(deparse(substitute(DF)))
@@ -81,10 +81,22 @@ if(file.exists(mef_file)) {
     stop(paste0(scram_file, " does not exist"))
   }
   
+if(!tolower(method) %in% c("bdd", "mcub"))  stop(paste0("method ", method, " is not recognized"))
+if(method == "mcub")  {  
+mcub = 1-(prod(1-prob_list[[2]][3]))
+ if(list_out==TRUE) {
+	prob_list[[1]]<-mcub
+	return(prob_list)
+ }else{
+	return(mcub)
+ }
+}else{ 
+
  if(list_out==TRUE) {
 	return(prob_list)
  }else{
 	return(prob_list[[1]])
- }
+ } 
+} 
 
 }

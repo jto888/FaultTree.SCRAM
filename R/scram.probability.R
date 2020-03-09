@@ -83,7 +83,7 @@ if(file.exists(mef_file)) {
   
 if(!tolower(method) %in% c("bdd", "mcub"))  stop(paste0("method ", method, " is not recognized"))
 if(method == "mcub")  {  
-mcub = 1-(prod(1-prob_list[[2]][3]))
+mcub = 1-(prod(1-prob_list[[2]][4]))
  if(list_out==TRUE) {
 	prob_list[[1]]<-mcub
 	return(prob_list)

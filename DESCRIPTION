@@ -7,6 +7,7 @@ Date: 2020-3-4
 Author: David J. Silkworth
 Maintainer: Jacob T. Ormerod <jake@openreliability.org>
 Depends: FaultTree
+SystemRequirements: scram
 Description: Fault trees parepared using package FaultTree are given access to advanced calculations on SCRAM.
 URL: http://www.openreliability.org/fault-tree-analysis-on-r/
 LazyLoad: yes
